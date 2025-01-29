@@ -1,0 +1,202 @@
+---
+title: "Appendix"
+subtitle: "Resource constellations and institutional logics shape network structures of the organic seed niche innovation system"
+output: pdf_document
+header-includes: 
+  \newcommand{\beginsupplement}{\setcounter{table}{0}  \renewcommand{\thetable}{S\arabic{table}} \setcounter{figure}{0} \renewcommand{\thefigure}{S\arabic{figure}}}
+---
+\beginsupplement
+```{r, echo = F, warning = F, message = F}
+library(kableExtra)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+knitr::opts_knit$set(root.dir = '~/Documents/Davis/R-Projects/osisn_processes/')
+source('code/functions.R')
+```
+
+## A. Population identification 
+
+We identified organic seed innovation system populations through two processes: An initial compilation of several stakeholder databases and a secondary snowball sampling process based on responses from the first round of data collection. For the initial process, we generated three databases with a total of 529 contacts. First, the USDA National Organic Program INTEGRITY database was manually reviewed to identify 390 seed producers (i.e. certified organic growers who produce crops for seed) who had valid email addresses and geographically identifiable operations. Second, 87 organic seed companies, based primarily but not entirely in the US, were identified by the national non-profit Organic Seed Alliance, who keep a database for their communication and research initiatives. Third, 52 organic seed researchers based in the US were identified by reviewing organic seed-related projects funded by major public and private organic grant funders (USDA -SARE, -OREI, -NIFA, OFRF, and Ceres Trust) and Web of Science publications over the last five years. This group included university, governmental, and non-profit researchers. Note that our initial population databases did not explicitly include governmental or non-governmental organizations, apart from those that were related to research. 
+
+For the second snowball process of identifying stakeholders, each survey included network questions about respondents' connections in the seed system. We used these responses to identify a snowball sample, from which there were an additional 227 seed system stakeholders, including 26 producers, 43 companies, 81 organizations, and 77 researchers (academic and governmental). While our initial database creation focused on US actors, the snowball process widened the scope of our respondents to include actors from other geographies. In total, we identified 756 actors in the organic seed innovation system.  
+
+\pagebreak 
+## B. Sample representativeness  
+
+The table below shows response rates by sector and location. Rows 2-5 include the response rates from actors based regionally in the United States (US). Row 6, USA, represents actors based in the US and operating at the national scale. Rows 7 an 8 represent all Canadian and other country respondents, respectively, and row 9 represents actors operating at the international scale. 
+
+```{r, echo = F}
+tablec1 <- read.csv('tables/tableS1.csv') 
+colnames(tablec1) <- c("Location", rep(c("n", "N", "% response"), 4)) 
+kbl(tablec1, booktabs = T, caption = 'Sample representativeness across US regions and spatial scales', align = c("l", rep("c", 12))) %>% kable_styling(latex_options = c("scale_down", "HOLD_position")) %>% 
+  add_header_above(c(" " = 1, "Producer" = 3, "Company" = 3, "Researcher" = 3,
+                     "Organization" = 3))
+# Can I add ad a latex options "HOLD_position"
+```
+
+
+\pagebreak 
+## C. Comparing missing data approaches 
+
+Given that we are modeling only a sample of the organic seed network, we need to take measures for dealing with missing data (Robins et al. 2004). There are several ways that network analysts deal with missing network data when networks are constructed with survey data (Krause et al. 2020). We review three approaches, described below:
+
+* **Method 1: Non-response offset** Maintain the network as reported by the survey sample (alters and egos), but account for non-response/missing-ness using sampling controls. This approach is commonly used in network studies for collaborative governance networks (e.g. Scott & Greer 2019; Levy & Lubell 2018). 
+* **Method 2: Network reduction** Reduce the network to only those who respond to a survey, the idea being that then you have a _sample of a full network_, where the structure is not biased towards core-periphery by alter non-respondents. This approach is also commonly used in network studies for collaborative governance networks (Angst & Brandenberger, 2022; Pozzi et al., 2024). 
+* **Method 3: Bayesian multiple imputation** Maintain the network as reported by the survey sample (alters and egos), but account for non-response/missing-ness using multiple imputation of ties with the `bergmM` function in the `Bergm` package (Caimo et al., 2022). This is a relatively new approach proposed by network methodologists and found to be highly robust (Krause et al. 2020; Xu et al. 2022). 
+
+We compare three different models to provide the reader with an understanding of the different approaches for working with missing network data. Throughout these comparisons we set a decay value for geometrically weighted parameters (gwdegree and gwesp) to 0.1 and 0.8, respectively, for consistency across comparisons.
+
+The coefficient estimates across the three different modeling approaches suggest that even across networks of different sizes (i.e. respondent only in Method 2 and ego-alter in Methods 1 and 3), and different approaches for missing data, the general understanding of results remains consistent. 
+
+```{r, echo = F, warning = F}
+coef_order <- c("Anti-centralization", 
+                "Triadic closure", 
+                "Actor-type: Government", 
+                "Actor-type: University & extension", 
+                "Actor-type: Organization", 
+                "Actor-type: Company", 
+                "Actor-type: Producer", 
+                "Regional homophily: Northeast", 
+                "Regional homophily: South", 
+                "Regional homophily: North Central", 
+                "Regional homophily: West",
+                "National homophily: US National", 
+                "Scale: National/International (vs. Regional)",
+                "Multi-functional tie",
+                "Survey non-respondent", 
+                "N respondents per node", 
+                "N generic connections", 
+                "Edges", "Fixed -Inf")
+
+rm_coefs <- "Fixed -Inf"
+rm_coefs <- c("Regional homophily: Northeast", 
+              "Regional homophily: South", 
+              "Regional homophily: North Central", 
+              "Regional homophily: West",
+              "National homophily: US National", 
+              "Scale: National/International (vs. Regional)",
+              "Multi-functional tie",
+              "Survey non-respondent", 
+              "N respondents per node", 
+              "N generic connections", 
+              "Edges", "Fixed -Inf")
+
+gwd_decay <- 0.1
+gwe_decay <- 0.8
+gray_3col <- c("lightgray", "darkgray", "black")
+names <- c("Method 1: Non-response offset", 
+           "Method 2: Network reduction", 
+           "Method 3: Bayesian multiple imputation")
+fx_models <- names
+fx_names <- names
+
+m_reduced4 <- readRDS(paste0('code/appendices/data/m_reduced4_gwd01_gwe', 
+                               str_remove(gwe_decay, '\\.'),'.rds'))
+m_offset4 <- readRDS(paste0('code/appendices/data/m_offset4_gwd01_gwe', 
+                              str_remove(gwe_decay, '\\.'),'.rds'))
+mb4 <- readRDS(paste0('code/appendices/data/m0b4_egoalter_gwd01_gwe', 
+                              str_remove(gwe_decay, '\\.'),'.rds'))
+
+
+titles <- c("Knowledge development", "Knowledge diffusion", 
+            "Resource mobilization", "Market formation")
+for(i in 1:length(m_reduced4)){
+  all_fx_models <- list(m_reduced4[[i]],
+                        m_offset4[[i]],
+                        mb4[[i]]
+                        )
+  all_models_df <- prep_models(all_fx_models, names, length(names))
+  p <- manual_coef_plot(all_models_df , gray_3col ) +
+    #guides(color=guide_legend(nrow=2,byrow=TRUE)) +
+    labs(title = paste0(titles[i], ": missing data model comparison")) +
+    theme(plot.title = element_text(size = 10)) +
+    xlim(c(-6,8))
+  print(p)
+}
+```
+
+\pagebreak 
+## D. Network correlations 
+
+```{r network correlations, echo = F, warning = F, results = F}
+data_dir <- "~/Box/osa_networks/data_combined/"
+networks_iso4 <- readRDS(paste0(data_dir,'networks/fx_netstack_iso_undir_universityindividual_4subnetworks.rds'))
+
+adj_kdev <- network::as.matrix.network.adjacency(networks_iso4[[2]]) 
+adj_kdif <- network::as.matrix.network.adjacency(networks_iso4[[3]])
+adj_rmob <- network::as.matrix.network.adjacency(networks_iso4[[4]])
+adj_sc <- network::as.matrix.network.adjacency(networks_iso4[[5]])
+
+cor_mat <- data.frame(matrix(nrow = 4, ncol = 5))
+cor_mat$X1 <- c("Knowledge development", "Knowledge diffusion", "Resource Mobilization", "Market formation")
+colnames(cor_mat) <- c('edge_type',"Knowledge development", "Knowledge diffusion", "Resource Mobilization", "Market formation")
+cor_mat[2,2] <- round(cor(c(adj_kdev), c(adj_kdif)), 2)
+cor_mat[3,2] <- round(cor(c(adj_kdev), c(adj_rmob)), 2)
+cor_mat[4,2] <- round(cor(c(adj_kdev), c(adj_sc)), 2)
+
+cor_mat[3,3] <- round(cor(c(adj_kdif), c(adj_rmob)), 2)
+cor_mat[4,3] <- round(cor(c(adj_kdif), c(adj_sc)), 2)
+
+cor_mat[4,4] <- round(cor(c(adj_rmob), c(adj_sc)), 2)
+cor_mat <- cor_mat[-1, -5]
+cor_mat[is.na(cor_mat)] <- ""
+```
+
+```{r networ cor df, echo = F, warning = F}
+kable(cor_mat, row.names = F,
+      col.names = c("", "Knowledge development", "Knowledge diffusion", "Resource Mobilization"),
+      caption = "Matrix correlations")
+```
+
+\pagebreak 
+## E. Full model results
+
+```{r, echo = F}
+fx_models <- c("Knowledge development", "Knowledge diffusion", 
+               "Resource mobilization", "Market formation")
+nmodels <- length(fx_models)
+tablec3 <- read.csv('tables/tableS3.csv') 
+colnames(tablec3) <- c("Term", rep(c("Estimate", "CI"), nmodels)) 
+kbl(tablec3, booktabs = T, caption = 'Full model results', 
+    align = c("l", rep("c", (nmodels*2)))) %>% 
+  kable_styling(latex_options = c("scale_down", "HOLD_position")) %>% 
+  add_header_above(c(" " = 1, "Knowledge development" = 2, "Knowledge diffusion" = 2,
+                     "Resource mobilization" = 2, "Market formation" = 2)) %>% 
+  footnote(symbol = "Credible intervals do not cross over zero")
+```
+
+\pagebreak 
+## F. BERGM fit 
+
+```{r, echo = F, results = T, out.width = '100%', fig.align = 'center', fig.cap = 'BGOF Knowledge development'}
+knitr::include_graphics('~/Documents/Davis/R-Projects/osisn_processes/figures/bgof_m0b4_egoalter_kdev_gwd01_gwe08.pdf', rel_path = getOption("knitr.graphics.rel_path", F))
+```
+
+```{r, echo = F, results = T, out.width = '100%', fig.align = 'center', fig.cap = 'BGOF Knowledge diffusion'}
+knitr::include_graphics('~/Documents/Davis/R-Projects/osisn_processes/figures/bgof_m0b4_egoalter_kdif_gwd01_gwe08.pdf', rel_path = getOption("knitr.graphics.rel_path", F))
+```
+
+```{r, echo = F, results = T, out.width = '100%', fig.align = 'center', fig.cap = 'BGOF Resource mobilization'}
+knitr::include_graphics('~/Documents/Davis/R-Projects/osisn_processes/figures/bgof_m0b4_egoalter_rmob_gwd01_gwe08.pdf', rel_path = getOption("knitr.graphics.rel_path", F))
+```
+
+```{r, echo = F, results = T, out.width = '100%', fig.align = 'center', fig.cap = 'BGOF Market formation'}
+knitr::include_graphics('~/Documents/Davis/R-Projects/osisn_processes/figures/bgof_m0b4_egoalter_sc_gwd01_gwe08.pdf', rel_path = getOption("knitr.graphics.rel_path", F))
+```
+
+## References 
+
+Angst, Mario, and Laurence Brandenberger. 2022. “Information Exchange in Governance Networks—Who Brokers across Political Divides?” Governance 35(2): 585–608. doi:10.1111/gove.12601.
+
+Caimo, A., Bouranis, L., Krause, R., & Friel, N. (2022). Statistical Network Analysis with Bergm. Journal of Statistical Software, 104, 1–23. https://doi.org/10.18637/jss.v104.i01
+
+Krause, Robert W., Mark Huisman, Christian Steglich, and Tom Snijders. 2020. “Missing Data in Cross-Sectional Networks – An Extensive Comparison of Missing Data Treatment Methods.” Social Networks 62: 99–112. doi:10.1016/j.socnet.2020.02.004.
+
+Levy, Michael, and Mark Lubell. 2018. “Innovation, Cooperation, and the Structure of Three Regional Sustainable Agriculture Networks in California.” Regional Environmental Change 18(4): 1235–46. doi:10.1007/s10113-017-1258-6.
+
+Pozzi, Tara, Elise Zufall, Kyra Gmoser-Daskalakis, and Francesca Vantaggiato. 2024. “Nascent Policy Subsystems in Polycentric Governance Networks: The Case of Sea-Level Rise Governance in the San Francisco Bay Area.” Policy Studies Journal 52(3): 561–81. doi:10.1111/psj.12549.
+
+Scott, Tyler A., and Robert A. Greer. 2019. “Polycentricity and the Hollow State: Exploring Shared Personnel as a Source of Connectivity in Fragmented Urban Systems.” Policy Studies Journal 47(1): 52–76. doi:10.1111/psj.12289.
+
+Xu, Ziqian, Jiarui Hai, Yutong Yang, and Zhiyong Zhang. 2022. “Comparison of Methods for Imputing Social Network Data.” Journal of Data Science 21(3): 599–618. doi:10.6339/22-JDS1045.
