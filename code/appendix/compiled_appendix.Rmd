@@ -11,7 +11,7 @@ library(kableExtra)
 library(dplyr)
 library(stringr)
 library(ggplot2)
-knitr::opts_knit$set(root.dir = '~/Documents/Davis/R-Projects/osisn_processes/')
+knitr::opts_knit$set(root.dir = '~/Documents/Davis/R-Projects/eist-osisn-resources/')
 source('code/functions.R')
 ```
 
@@ -91,11 +91,11 @@ names <- c("Method 1: Non-response offset",
 fx_models <- names
 fx_names <- names
 
-m_reduced4 <- readRDS(paste0('code/appendices/data/m_reduced4_gwd01_gwe', 
+m_reduced4 <- readRDS(paste0('code/appendix/models/m_reduced4_gwd01_gwe', 
                                str_remove(gwe_decay, '\\.'),'.rds'))
-m_offset4 <- readRDS(paste0('code/appendices/data/m_offset4_gwd01_gwe', 
+m_offset4 <- readRDS(paste0('code/appendix/models/m_offset4_gwd01_gwe', 
                               str_remove(gwe_decay, '\\.'),'.rds'))
-mb4 <- readRDS(paste0('code/appendices/data/m0b4_egoalter_gwd01_gwe', 
+mb4 <- readRDS(paste0('code/appendix/models/m0b4_egoalter_gwd01_gwe', 
                               str_remove(gwe_decay, '\\.'),'.rds'))
 
 
@@ -184,6 +184,8 @@ knitr::include_graphics('~/Documents/Davis/R-Projects/osisn_processes/figures/bg
 ```{r, echo = F, results = T, out.width = '100%', fig.align = 'center', fig.cap = 'BGOF Market formation'}
 knitr::include_graphics('~/Documents/Davis/R-Projects/osisn_processes/figures/bgof_m0b4_egoalter_sc_gwd01_gwe08.pdf', rel_path = getOption("knitr.graphics.rel_path", F))
 ```
+
+\pagebreak 
 
 ## References 
 

@@ -124,9 +124,9 @@ for(i in 2:length(networks4_reduced)){
                                                MCMLE.effectiveSize = NULL))
 }
 
-saveRDS(m_reduced4, paste0('code/appendix/models/m_reduced4_gwd', 
-                     str_remove(gwd_save, '\\.'),
-                     '_gwe', str_remove(gwe_save, '\\.'), '.rds'))
+#saveRDS(m_reduced4, paste0('code/appendix/models/m_reduced4_gwd', 
+#                     str_remove(gwd_save, '\\.'),
+#                     '_gwe', str_remove(gwe_save, '\\.'), '.rds'))
 
 ## Method 2 ----
 matrices4 <- readRDS(paste0(data_dir,'networks/fx_matrices_undir_universityindividual_4subnetworks.rds'))
@@ -151,9 +151,9 @@ for(i in 2:length(networks4)){
                                                     MCMLE.effectiveSize = NULL))
 }
 
-saveRDS(m_offset4, paste0('code/appendix/models/m_offset4_gwd', 
-                          str_remove(gwd_save, '\\.'),
-                          '_gwe', str_remove(gwe_save, '\\.'), '.rds'))
+#saveRDS(m_offset4, paste0('code/appendix/models/m_offset4_gwd', 
+#                          str_remove(gwd_save, '\\.'),
+#                          '_gwe', str_remove(gwe_save, '\\.'), '.rds'))
 
 ## Method 3 ----
 alters_only <- unique(nodes$Operation[!(nodes$Operation %in% edges$from)])
@@ -207,22 +207,22 @@ for(i in 1:length(networks_missing4)){
   mb4[[i]] <- m0b
 }
 
-saveRDS(mb4, paste0('code/appendix/models/m0b4_egoalter_gwd', 
-                    str_remove(gwd_save, '\\.'),
-                    '_gwe', str_remove(gwe_save, '\\.'), '.rds'))
+#saveRDS(mb4, paste0('code/appendix/models/m0b4_egoalter_gwd', 
+#                    str_remove(gwd_save, '\\.'),
+#                    '_gwe', str_remove(gwe_save, '\\.'), '.rds'))
 
 ## BGOF plots ----
 # If I run this line by line, it does not work. But if I run the whole chunk, it does
 names <- c("kdev", "kdif", 
            "rmob", "sc")
-for(i in 1:length(names)){
-  pdf(paste0("figures/bgof_m0b4_egoalter_",
-             names[i], "_gwd",
-             str_remove(gwd_save, '\\.'),
-             '_gwe', str_remove(gwe_save, '\\.'), '.pdf'),
-      width = 7, height = 3.5)
-  par(mfrow = c(1,1))
-  bgof(mb4[[i]], n.deg = 20, n.dist = 20, n.esp = 7)
-  dev.off()
-}
+#for(i in 1:length(names)){
+#  pdf(paste0("figures/bgof_m0b4_egoalter_",
+#             names[i], "_gwd",
+#             str_remove(gwd_save, '\\.'),
+#             '_gwe', str_remove(gwe_save, '\\.'), '.pdf'),
+#      width = 7, height = 3.5)
+#  par(mfrow = c(1,1))
+#  bgof(mb4[[i]], n.deg = 20, n.dist = 20, n.esp = 7)
+#  dev.off()
+#}
 

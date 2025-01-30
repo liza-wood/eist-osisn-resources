@@ -505,8 +505,7 @@ textVals((exp(gwesps) - 1) * 100)
 
 rev(unique(full_fx_models_df$model))
 
-
-## Actor types 
+## Actor activity 
 govts = select(filter(full_fx_models_df, term == "Actor-type: Government"),
                Estimate)
 orgs = select(filter(full_fx_models_df, term == "Actor-type: Organization"),
@@ -549,3 +548,4 @@ rev((exp(co$Estimate) - 1) * 100)[1]
 rev((exp(co$Estimate) - 1) * 100)[2]
 rev((exp(co$Estimate) - 1) * 100)[3]
 rev((exp(co$Estimate) - 1) * 100)[4]
+
