@@ -271,7 +271,7 @@ set.seed(22)
 fixed_coord <- create_layout(networks[[1]], layout = 'fr')
 
 ## Combining plots ----
-legend_font_size = 11
+legend_font_size = 9
 title_font_size = 7
 legend <- cowplot::get_plot_component(subplot_viz_fixed(fixed_coord, 
                                                         networks[[1]])  +
@@ -427,7 +427,7 @@ fx_models <- c("Knowledge development", "Knowledge diffusion",
 
 full_fx_models_df <- prep_models(mb, fx_models, 4)
 manual_coef_plot(full_fx_models_df, mako_4col)
-ggsave('figures/figure4.png', width = 5, height = 3.7, dpi = 500)
+ggsave('figures/figure4.png', width = 5, height = 3.4, dpi = 500)
 
 results_table <- full_fx_models_df %>% 
   mutate(Estimate = round(Estimate, 2),

@@ -462,8 +462,8 @@ p_combined <- dfl %>%
   labs(y = "", x = "", title = "", color = "") +
   scale_color_viridis_d(begin = .4, end = .8, option = "B") +
   theme(axis.text.x=element_text(angle = 45, hjust = 1),
-        text = element_text(family = "Times", size = 14),
-        plot.title = element_text(hjust = .5, size = 14)) +
+        text = element_text(family = "Times", size = 12),
+        plot.title = element_text(hjust = .5, size = 12)) +
   ggh4x::force_panelsizes(cols = c(1,.7,.3)) ; p_combined
 
 ggsave(filename = 'figures/figure3.png', width = 8, height = 4.5)
